@@ -1,0 +1,56 @@
+---
+# ============================================
+# Playbook: Deploy FastAPI App with Docker Compose
+# Target: App servers with Docker installed
+# ============================================
+- name: Deploy FastAPI Application
+  hosts: homelab
+  become: true
+
+  vars:
+    app_dir: /opt/fastapi-app
+    app_port: 8000
+
+  tasks:
+    - name: Create app directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ app_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: Copy nginx config
+      template:
+        src: templates/nginx.conf.j2
+        dest: "{{ app_dir }}/nginx.conf"
+        mode: "0644"
+
+    - name: Pull latest images
+      command: docker compose pull
+      args:
+        chdir: "{{ app_dir }}"
+      changed_when: true
+
+    - name: Deploy with Docker Compose
+      command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ app_dir }}"
+      changed_when: true
+
+    - name: Wait for app to be healthy
+      uri:
+        url: "http://localhost:{{ app_port }}/health"
+        status_code: 200
+      register: health
+      retries: 10
+      delay: 5
+      until: health.status == 200
+
+    - name: Show deployment status
+      debug:
+        msg: "FastAPI deployed at http://{{ ansible_host }}:{{ app_port }}"

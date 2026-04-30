@@ -1,0 +1,21 @@
+services:
+  fastapi:
+    image: ghcr.io/derbswag/devops-fastapi-lab:latest
+    ports:
+      - "{{ app_port }}:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - fastapi
+    restart: unless-stopped

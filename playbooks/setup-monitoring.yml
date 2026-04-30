@@ -1,0 +1,42 @@
+---
+# ============================================
+# Playbook: Deploy Prometheus + Grafana + Node Exporter
+# Target: Monitoring server
+# ============================================
+- name: Setup Monitoring Stack
+  hosts: homelab
+  become: true
+
+  vars:
+    monitoring_dir: /opt/monitoring
+
+  tasks:
+    - name: Create monitoring directory
+      file:
+        path: "{{ monitoring_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy monitoring docker-compose
+      template:
+        src: templates/monitoring-compose.yml.j2
+        dest: "{{ monitoring_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: Copy Prometheus config
+      template:
+        src: templates/prometheus.yml.j2
+        dest: "{{ monitoring_dir }}/prometheus.yml"
+        mode: "0644"
+
+    - name: Deploy monitoring stack
+      command: docker compose up -d
+      args:
+        chdir: "{{ monitoring_dir }}"
+      changed_when: true
+
+    - name: Show monitoring URLs
+      debug:
+        msg:
+          - "Prometheus: http://{{ ansible_host }}:9090"
+          - "Grafana:    http://{{ ansible_host }}:3000"
