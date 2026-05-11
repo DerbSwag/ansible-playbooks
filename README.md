@@ -74,6 +74,20 @@ Ansible Control Node (your machine)
     ├── ansible-playbook setup-docker.yml ──► Home Lab (Docker installed)
     ├── ansible-playbook deploy-fastapi.yml ──► Home Lab (App running)
     ├── ansible-playbook setup-monitoring.yml ──► Home Lab (Monitoring up)
+
+```mermaid
+graph LR
+    Control[Ansible Control Node] --> Harden[harden-server.yml]
+    Control --> Docker[setup-docker.yml]
+    Control --> Deploy[deploy-fastapi.yml]
+    Control --> Monitor[setup-monitoring.yml]
+    Harden --> |UFW, fail2ban, SSH| Servers[All Servers]
+    Docker --> |Docker CE + Compose| HomeLab[Home Lab]
+    Deploy --> |FastAPI + Nginx| HomeLab
+    Monitor --> |Prometheus + Grafana| HomeLab
+```
+
+
     └── ansible-playbook harden-server.yml ──► All servers (Secured)
 ```
 
