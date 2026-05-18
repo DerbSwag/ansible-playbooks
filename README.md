@@ -1,4 +1,4 @@
-# 🤖 Ansible Playbooks — Hybrid Lab Automation
+﻿# 🤖 Ansible Playbooks — Hybrid Lab Automation
 
 Ansible playbooks for automating server setup, app deployment, monitoring, and security hardening across Home Lab and Company Lab environments.
 
@@ -7,6 +7,19 @@ Ansible playbooks for automating server setup, app deployment, monitoring, and s
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
 
+
+## 📈 Results
+
+| Metric | Value |
+|--------|-------|
+| Playbooks | **4** (Docker, FastAPI, Monitoring, Hardening) |
+| Server setup time | Manual ~2 hrs → **<15 min** (one playbook) |
+| Environments covered | Home Lab + Company Lab |
+| Security hardening | UFW + fail2ban + SSH lockdown in **one run** |
+| Monitoring stack | Prometheus + Grafana + Node Exporter deployed automatically |
+| Reproducibility | Idempotent — run multiple times safely |
+
+---
 ## 📁 Project Structure
 
 ```
